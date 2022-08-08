@@ -12,6 +12,7 @@ import UIKit
 
 public typealias Index = Int
 public typealias Closure = () -> Void
+public typealias WillDisplayClosure = (Index) -> Void
 public typealias SelectionClosure = (Index, String) -> Void
 public typealias MultiSelectionClosure = ([Index], [String]) -> Void
 public typealias ConfigurationClosure = (Index, String) -> String
@@ -412,6 +413,9 @@ public final class DropDown: UIView {
 	public var cellConfiguration: ConfigurationClosure? {
 		didSet { reloadAllComponents() }
 	}
+    
+    /// The action to execute when the user scroll table view.
+    public var willDisplayAction: WillDisplayClosure?
     
     /**
      A advanced formatter for the cells. Allows customization when custom cells are used
@@ -1090,6 +1094,7 @@ extension DropDown: UITableViewDataSource, UITableViewDelegate {
 
 	public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.isSelected = selectedRowIndices.first{ $0 == (indexPath as NSIndexPath).row } != nil
+        willDisplayAction?(indexPath.row)
 	}
 
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
